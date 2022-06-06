@@ -7,7 +7,7 @@ graph LR
 A[POSTMAN] -- Get Posts API's --> B(Post Item)  
 A -- Get Merged Post List API's--> B(Post Item)  
 D -- get entity from DB --> B(Post Item)  
-B -- process the entity and convert to response DTO --> A(Post Item)  
+B -- process the entity and convert to response DTO --> A(Postman)  
 B -- request queries --> D{Database}  
 ```
 
