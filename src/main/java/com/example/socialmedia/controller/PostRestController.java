@@ -1,17 +1,18 @@
 package com.example.socialmedia.controller;
 
+import com.example.socialmedia.controller.dto.request.ListOfPostsRestRequest;
 import com.example.socialmedia.controller.dto.request.PostRestRequest;
+import com.example.socialmedia.controller.dto.response.MergedPostsRestResponse;
 import com.example.socialmedia.controller.dto.response.PostRestResponse;
-import com.example.socialmedia.model.Post;
-import com.example.socialmedia.model.PostDTO;
 import com.example.socialmedia.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -32,14 +33,13 @@ public class PostRestController {
         return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
-    @PutMapping(value = "posts")
-    public ResponseEntity<PostRestResponse> mergePosts(@RequestBody PostRestRequest request) {
+    @GetMapping(value = "merge-posts")
+    public ResponseEntity<MergedPostsRestResponse> mergePosts(@RequestBody ListOfPostsRestRequest request) {
 
-        final var userId = request.getId();
-        final var postIds = request.getPostIds();
+        final var listOfPosts = request.getListOfPosts();
         log.info("Request to merge posts!");
-        final var response = new PostRestResponse();
-        response.setPosts(postService.getPosts(userId, postIds));
+        final var response = new MergedPostsRestResponse();
+        response.setMergedPosts(postService.mergePostsLists(listOfPosts));
 
         return new ResponseEntity<>(response, HttpStatus.FOUND);
     }

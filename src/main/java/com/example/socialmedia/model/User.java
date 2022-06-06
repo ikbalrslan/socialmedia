@@ -4,9 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
-
-import static javax.persistence.CascadeType.ALL;
 
 /**
  * @author İkbal Arslan

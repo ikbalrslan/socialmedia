@@ -1,9 +1,6 @@
 package com.example.socialmedia.service;
 
-import com.example.socialmedia.model.Post;
-import com.example.socialmedia.model.PostDTO;
-import com.example.socialmedia.model.User;
-import com.example.socialmedia.model.UserDTO;
+import com.example.socialmedia.model.*;
 import com.example.socialmedia.repository.FollowJpaRepository;
 import com.example.socialmedia.repository.LikeJpaRepository;
 import com.example.socialmedia.repository.PostJpaRepository;
@@ -12,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author İkbal Arslan
@@ -27,7 +23,7 @@ public class PostServiceImpl implements PostService {
     private final FollowJpaRepository followJpaRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostDTO> getPosts(int userId, List<Integer> postIds) {
         List<Post> posts = new ArrayList<>();
         postIds.forEach(postId -> {
@@ -38,6 +34,48 @@ public class PostServiceImpl implements PostService {
         });
         final var PostDTO = convertToPostDTOs(userId, posts);
         return PostDTO;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MergedPostDTO> mergePostsLists(List<List<Integer>> listOfPosts) {
+        HashMap<Integer, Post> postList = new HashMap<>();
+        listOfPosts.forEach(posts -> {
+            posts.forEach(postId -> {
+                final var post = postJpaRepository.findPostById(postId);
+                if (post != null && !postList.keySet().contains(postId))
+                    postList.put(postId, post);
+            });
+        });
+        final var posts = sortByDateAndId(postList);
+        return convertToMergedPostDTOs(posts);
+    }
+
+    private HashMap<Integer, Post> sortByDateAndId(HashMap<Integer, Post> posts) {
+        List<Map.Entry<Integer, Post>> list =
+                new LinkedList<>(posts.entrySet());
+
+        Collections.sort(list, Comparator.comparing(o -> (o.getValue().getCreated_at())));
+
+        HashMap<Integer, Post> tempMap = new LinkedHashMap<>();
+        for (Map.Entry<Integer, Post> post : list) {
+            tempMap.put(post.getKey(), post.getValue());
+        }
+        return tempMap;
+    }
+
+    private List<MergedPostDTO> convertToMergedPostDTOs(HashMap<Integer, Post> posts) {
+        List<MergedPostDTO> postDTOs = new ArrayList<>();
+        posts.values().forEach(post -> {
+            postDTOs.add(MergedPostDTO.builder()
+                    .id(post.getId())
+                    .description(post.getDescription())
+                    .image(post.getImage())
+                    .createdAt(post.getCreated_at())
+                    .build()
+            );
+        });
+        return postDTOs;
     }
 
     private List<PostDTO> convertToPostDTOs(int userId, List<Post> posts) {
