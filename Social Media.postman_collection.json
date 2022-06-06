@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "866efa0d-ee40-43d9-9558-c6741dfd33aa",
+		"name": "Social Media",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13199612"
+	},
+	"item": [
+		{
+			"name": "getPosts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 2,\n    \"postIds\": [1,2,11,8,5]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/social/rest/posts",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"social",
+						"rest",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getMergedList",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"listOfPosts\": [\n        [1,2,3,4],\n        [5,6,7,8]\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/social/rest/merge-posts",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"social",
+						"rest",
+						"merge-posts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
